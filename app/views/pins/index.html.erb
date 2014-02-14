@@ -1,0 +1,54 @@
+<%= render 'pages/home' unless user_signed_in? %>
+
+<div id="pins" class="transitions-enabled">
+  <% @pins.each do |pin| %>
+    <div class="box panel panel-default">
+      
+
+
+		<% if !pin.image.blank? %>
+      <%= link_to image_tag(pin.image.url(:medium)), pin %>
+
+    <% elsif !pin.video.blank? %>
+
+      <%= link_to pin do %>
+        <video width="212" height="230" style="margin-top: -35px; " controls>
+          <source src="<%= pin.video.url %>">
+        </video>
+      <% end %>
+    <% end %>
+
+
+      <div class="panel-body">
+        <%= pin.description %><br/>
+        <%= pin.video_description %><br/>
+
+        <% if pin.user %>
+          <strong><%= link_to pin.user.name, member_path(pin.user.id) %></strong>
+        <% end %>
+        
+        <% if !current_user.blank? %>
+          
+
+          <% if pin.user == current_user %>
+            <div class="actions">
+              <%= link_to edit_pin_path(pin) do %>
+                  <span class="glyphicon glyphicon-edit"></span>
+                  Edit
+              <% end %>
+             <%= link_to pin, method: :delete, data: { confirm: 'Are you sure?' } do %>
+                <span class="glyphicon glyphicon-trash"></span>
+                Delete
+              <% end %>
+            </div>
+          <% end %>
+        <% end %>
+        
+      </div>
+    </div>
+  <% end %>
+</div>
+
+<div class="center">
+  <%= will_paginate @posts %>
+</div>
